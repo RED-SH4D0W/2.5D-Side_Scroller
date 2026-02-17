@@ -59,6 +59,13 @@ namespace Player
         public float VerticalVelocity => _verticalVelocity;
 
         // ================================================================
+        // INSPECTOR – Physical State  (PHASE 2)
+        // ================================================================
+
+        [Header("Physical State (Phase 2)")]
+        [SerializeField] private PlayerPhysicalState _physicalState;
+
+        // ================================================================
         // PRIVATE STATE
         // ================================================================
 
@@ -85,6 +92,10 @@ namespace Player
             _standingHeight = _cc.height;
             _standingCenter = _cc.center;
             _currentHeight = _standingHeight;
+
+            // PHASE 2 — auto-resolve physical state if not assigned in Inspector
+            if (_physicalState == null)
+                _physicalState = GetComponent<PlayerPhysicalState>();
         }
 
         private void Update()
@@ -111,7 +122,8 @@ namespace Player
 
             _inputSprint = Keyboard.current.leftShiftKey.isPressed &&
                            !IsCrouching &&
-                           IsGrounded;
+                           IsGrounded &&
+                           _physicalState.HasStaminaForSprint; // PHASE 2 MODIFICATION
 
             _wantsToCrouch = Keyboard.current.leftCtrlKey.isPressed;
 
@@ -209,8 +221,16 @@ namespace Player
         {
             float maxSpeed = _walkSpeed;
 
+            // PHASE 2 MODIFICATION — apply weight-based movement penalty once
+            maxSpeed *= _physicalState.MovementMultiplier;
+
             if (_inputSprint)
+            {
                 maxSpeed *= _sprintMultiplier;
+
+                // PHASE 2 MODIFICATION — drain stamina while actually sprinting
+                _physicalState.ConsumeSprintStamina(Time.deltaTime);
+            }
 
             if (IsCrouching)
                 maxSpeed *= _crouchSpeedMultiplier;
@@ -236,12 +256,16 @@ namespace Player
         {
             _jumpBufferTimer -= Time.deltaTime;
 
-            bool canJump = _coyoteTimer > 0f;
+            // PHASE 2 MODIFICATION — jump requires stamina
+            bool canJump = _coyoteTimer > 0f && _physicalState.HasStaminaForJump;
 
             // Jump start
             if (_jumpBufferTimer > 0f && canJump)
             {
-                _verticalVelocity = _jumpForce;
+                // PHASE 2 MODIFICATION — apply weight-based jump penalty & consume stamina
+                _verticalVelocity = _jumpForce * _physicalState.JumpMultiplier;
+                _physicalState.ConsumeJumpStamina();
+
                 _coyoteTimer = 0f;
                 _jumpBufferTimer = 0f;
                 _jumpCutApplied = false;
