@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace Player
@@ -39,6 +40,14 @@ namespace Player
         [SerializeField] private LayerMask _ceilingMask = ~0;
 
         // ================================================================
+        // INSPECTOR – Events
+        // ================================================================
+
+        [Header("Events")]
+        [SerializeField] private UnityEvent _onCrouched;
+        [SerializeField] private UnityEvent _onUncrouched;
+
+        // ================================================================
         // PUBLIC READ-ONLY STATE
         // ================================================================
 
@@ -64,6 +73,7 @@ namespace Player
         private bool _wantsToCrouch;
         private float _inputX;
         private bool _inputSprint;
+        private Vector3 _standingCenter;
 
         // ================================================================
         // LIFECYCLE
@@ -73,6 +83,7 @@ namespace Player
         {
             _cc = GetComponent<CharacterController>();
             _standingHeight = _cc.height;
+            _standingCenter = _cc.center;
             _currentHeight = _standingHeight;
         }
 
@@ -139,8 +150,12 @@ namespace Player
         {
             if (_wantsToCrouch)
             {
-                SetHeight(_crouchHeight);
-                IsCrouching = true;
+                if (!IsCrouching)
+                {
+                    SetHeight(_crouchHeight);
+                    IsCrouching = true;
+                    _onCrouched?.Invoke();
+                }
             }
             else if (IsCrouching)
             {
@@ -148,6 +163,7 @@ namespace Player
                 {
                     SetHeight(_standingHeight);
                     IsCrouching = false;
+                    _onUncrouched?.Invoke();
                 }
             }
         }
@@ -158,13 +174,15 @@ namespace Player
                 return;
 
             float previousHeight = _currentHeight;
-            float delta = targetHeight - previousHeight;
 
             _cc.height = targetHeight;
-            _cc.center = new Vector3(0f, targetHeight * 0.5f, 0f);
 
-            // Keep feet planted visually
-            transform.position += Vector3.up * (delta * 0.5f);
+            // Offset the center so the bottom of the capsule stays at the same world position.
+            // Standing bottom = transform.y + standingCenter.y - standingHeight/2
+            // We want that same bottom for any height, so:
+            // newCenter.y = standingCenter.y - (standingHeight - targetHeight) / 2
+            float centerY = _standingCenter.y - (_standingHeight - targetHeight) * 0.5f;
+            _cc.center = new Vector3(_standingCenter.x, centerY, _standingCenter.z);
 
             _currentHeight = targetHeight;
         }
