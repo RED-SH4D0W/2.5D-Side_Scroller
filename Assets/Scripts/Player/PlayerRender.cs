@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Player
+namespace DScrollerGame.Player
 {
     public class PlayerRender : MonoBehaviour
     {

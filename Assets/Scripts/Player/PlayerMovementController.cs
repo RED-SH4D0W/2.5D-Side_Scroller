@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-namespace Player
+namespace DScrollerGame.Player
 {
     [RequireComponent(typeof(CharacterController))]
     public class PlayerMovementController : MonoBehaviour

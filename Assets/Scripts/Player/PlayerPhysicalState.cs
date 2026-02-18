@@ -1,6 +1,7 @@
+using DScrollerGame.Utils.PropertyDrawers;
 using UnityEngine;
 
-namespace Player
+namespace DScrollerGame.Player
 {
     /// <summary>
     /// Manages the player's physical condition: Stamina and Carry-Weight.
@@ -85,6 +86,13 @@ namespace Player
 
         /// <summary>True when stamina is completely depleted.</summary>
         public bool IsExhausted => _currentStamina <= 0f;
+        
+        // ================================================================
+        // INSPECTOR – Debug (read-only)
+        // ================================================================
+
+        [Header("Debug (Runtime)")]
+        [ReadOnly, SerializeField] private float _debugNormalizedStamina;
 
         // ================================================================
         // PUBLIC READ-ONLY – Weight

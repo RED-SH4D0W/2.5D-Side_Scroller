@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CameraSystem
+namespace DScrollerGame.CameraSystem
 {
     [RequireComponent(typeof(BoxCollider))]
     public class CameraZone : MonoBehaviour
