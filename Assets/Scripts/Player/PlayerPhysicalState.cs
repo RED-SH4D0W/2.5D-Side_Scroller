@@ -271,21 +271,21 @@ private void LateUpdate()
     {
         _debugLogTimer = 0f;
 
-        Debug.Log(
-            $"[PlayerPhysicalState DEBUG]\n" +
-            $"Stamina: {_currentStamina:F1} / {_maxStamina}\n" +
-            $"Normalized Stamina: {NormalizedStamina:F2}\n" +
-            $"Has Stamina For Sprint: {HasStaminaForSprint}\n" +
-            $"Has Stamina For Jump: {HasStaminaForJump}\n" +
-            $"Is Exhausted: {IsExhausted}\n\n" +
-            $"Carry Weight: {_currentCarryWeight:F1} / {_maxCarryWeight}\n" +
-            $"Weight %: {WeightPercent:F2}\n" +
-            $"Is Overburdened: {IsOverburdened}\n\n" +
-            $"Movement Multiplier: {_movementMultiplier:F2}\n" +
-            $"Jump Multiplier: {_jumpMultiplier:F2}\n" +
-            $"Effective Jump Force: (base × {_jumpMultiplier:F2})\n" +
-            $"Stamina Drain Multiplier: {_staminaDrainMultiplier:F2}"
-        );
+        // Debug.Log(
+        //     $"[PlayerPhysicalState DEBUG]\n" +
+        //     $"Stamina: {_currentStamina:F1} / {_maxStamina}\n" +
+        //     $"Normalized Stamina: {NormalizedStamina:F2}\n" +
+        //     $"Has Stamina For Sprint: {HasStaminaForSprint}\n" +
+        //     $"Has Stamina For Jump: {HasStaminaForJump}\n" +
+        //     $"Is Exhausted: {IsExhausted}\n\n" +
+        //     $"Carry Weight: {_currentCarryWeight:F1} / {_maxCarryWeight}\n" +
+        //     $"Weight %: {WeightPercent:F2}\n" +
+        //     $"Is Overburdened: {IsOverburdened}\n\n" +
+        //     $"Movement Multiplier: {_movementMultiplier:F2}\n" +
+        //     $"Jump Multiplier: {_jumpMultiplier:F2}\n" +
+        //     $"Effective Jump Force: (base × {_jumpMultiplier:F2})\n" +
+        //     $"Stamina Drain Multiplier: {_staminaDrainMultiplier:F2}"
+        // );
     }
 }
 #endif
