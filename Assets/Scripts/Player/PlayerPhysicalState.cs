@@ -51,7 +51,7 @@ namespace DScrollerGame.Player
         // PRIVATE STATE – Stamina
         // ================================================================
 
-        private float _currentStamina;
+        [ReadOnly, SerializeField] private float _currentStamina;
         private float _lastStaminaUseTime = Mathf.NegativeInfinity;
 
         // ================================================================
@@ -87,12 +87,6 @@ namespace DScrollerGame.Player
         /// <summary>True when stamina is completely depleted.</summary>
         public bool IsExhausted => _currentStamina <= 0f;
         
-        // ================================================================
-        // INSPECTOR – Debug (read-only)
-        // ================================================================
-
-        [Header("Debug (Runtime)")]
-        [ReadOnly, SerializeField] private float _debugNormalizedStamina;
 
         // ================================================================
         // PUBLIC READ-ONLY – Weight
