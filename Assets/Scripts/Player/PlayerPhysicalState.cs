@@ -256,13 +256,13 @@ private void LateUpdate()
     if (UnityEngine.InputSystem.Keyboard.current.digit1Key.wasPressedThisFrame)
     {
         AddWeight(25f);
-        Debug.Log($"[DEBUG] Added 25 weight → Current: {_currentCarryWeight:F1}");
+        //Debug.Log($"[DEBUG] Added 25 weight → Current: {_currentCarryWeight:F1}");
     }
 
     if (UnityEngine.InputSystem.Keyboard.current.digit2Key.wasPressedThisFrame)
     {
         RemoveWeight(25f);
-        Debug.Log($"[DEBUG] Removed 25 weight → Current: {_currentCarryWeight:F1}");
+        //Debug.Log($"[DEBUG] Removed 25 weight → Current: {_currentCarryWeight:F1}");
     }
 
     _debugLogTimer += Time.deltaTime;

@@ -207,7 +207,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.231848, y: 2.2040873, z: -25}
+  m_LocalPosition: {x: 5.909274, y: 2.2040873, z: -25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -529,6 +529,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &472055574 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3964301817531098844, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
+  m_PrefabInstance: {fileID: 5652036625083364769}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &579824643
 GameObject:
   m_ObjectHideFlags: 0
@@ -644,7 +649,7 @@ Transform:
   m_GameObject: {fileID: 579824643}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.231848, y: 2.2040873, z: -25}
+  m_LocalPosition: {x: 5.909274, y: 2.2040873, z: -25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -740,7 +745,7 @@ MonoBehaviour:
   _overrideLookahead: 0
   _overrideDeadZoneWidth: 0
   _overrideDeadZoneHeight: 0
-  _targetFOV: 60
+  _targetFOV: 40
   _targetXDamping: 1
   _targetYDamping: 0.5
   _targetOffset: {x: -10, y: 0, z: -5}
@@ -796,6 +801,32 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2185511859577830242, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
   m_PrefabInstance: {fileID: 5652036625083364769}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1409886733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472055574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5631b079173224bcda70f4c71fa47d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DScrollerGame.Player.PlayerStealthState
+  _idleNoise: 0.2
+  _walkNoise: 0.4
+  _sprintNoise: 0.8
+  _crouchNoise: 0.1
+  _jumpLandNoise: 0.6
+  _noiseSmoothTime: 0.2
+  _maxNoiseRadius: 15
+  _baseVisibility: 0.4
+  _moveVisibilityBonus: 0.6
+  _sprintVisibilityBonus: 0.8
+  _crouchVisibilityMultiplier: 0.2
+  _visibilitySmoothTime: 0.3
+  _movement: {fileID: 0}
+  _physicalState: {fileID: 0}
 --- !u!1001 &5652036625083364769
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -851,7 +882,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3964301817531098844, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1409886733}
   m_SourcePrefab: {fileID: 100100000, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
