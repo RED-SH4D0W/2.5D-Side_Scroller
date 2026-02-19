@@ -294,6 +294,9 @@ MonoBehaviour:
   _aimWithMouse: 1
   _mouseAimAngleClamp: {x: -10, y: 80}
   _aimCamera: {fileID: 0}
+  _useMouseForceMultiplier: 1
+  _mouseForceMaxDistance: 25
+  _mouseForceMultiplierClamp: {x: 0.5, y: 1.5}
   _trajectoryLine: {fileID: 2616197245721512102}
   _trajectoryPoints: 25
   _trajectoryTimeStep: 0.05
