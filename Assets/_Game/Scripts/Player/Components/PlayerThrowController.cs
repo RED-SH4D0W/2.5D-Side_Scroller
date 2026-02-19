@@ -106,6 +106,12 @@ namespace DScrollerGame.Player
                 StartCharging();
             }
 
+            if (_isCharging && Keyboard.current.cKey.wasPressedThisFrame)
+            {
+                StopCharging();
+                return;
+            }
+
             if (Mouse.current.leftButton.wasReleasedThisFrame && _isCharging)
             {
                 ExecuteThrow();
