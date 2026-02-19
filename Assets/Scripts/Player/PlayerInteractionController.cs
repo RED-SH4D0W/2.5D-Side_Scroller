@@ -51,6 +51,15 @@ namespace DScrollerGame.Player
         [Tooltip("Vertical throw angle in degrees (0 = pure horizontal).")]
         [SerializeField] private float _throwAngle = 30f;
 
+        [Tooltip("If true, aim toward mouse instead of using the fixed Throw Angle.")]
+        [SerializeField] private bool _aimWithMouse = true;
+
+        [Tooltip("Min/max aim angle (degrees) when aiming with mouse.")]
+        [SerializeField] private Vector2 _mouseAimAngleClamp = new Vector2(-10f, 80f);
+
+        [Tooltip("Camera used for aiming. If null, falls back to Camera.main.")]
+        [SerializeField] private Camera _aimCamera;
+
         // ================================================================
         // INSPECTOR – Trajectory Preview
         // ================================================================
@@ -101,12 +110,7 @@ namespace DScrollerGame.Player
         // PUBLIC — Push State
         // ================================================================
 
-        /// <summary>True when the player is actively pushing an object.</summary>
         public bool IsPushing => _activePushTarget != null;
-
-        // ================================================================
-        // LIFECYCLE
-        // ================================================================
 
         private void Awake()
         {
@@ -123,6 +127,9 @@ namespace DScrollerGame.Player
                 _trajectoryLine.positionCount = 0;
                 _trajectoryLine.enabled = false;
             }
+
+            if (_aimCamera == null)
+                _aimCamera = Camera.main;
         }
 
         private void Update()
@@ -283,6 +290,60 @@ namespace DScrollerGame.Player
         }
 
         /// <summary>
+        /// Computes the throw velocity vector.
+        /// If Aim With Mouse is enabled, the aim angle is derived from mouse position.
+        /// Otherwise, uses facing direction and fixed throw angle.
+        /// </summary>
+        private Vector3 CalculateThrowVelocity()
+        {
+            float facingSign = Mathf.Sign(transform.localScale.x);
+
+            float angleDeg = _throwAngle;
+
+            if (_aimWithMouse)
+            {
+                Vector3 origin = _throwOrigin != null ? _throwOrigin.position : transform.position;
+                origin.z = 0f;
+
+                Vector3 mouseWorld = GetMouseWorldAtSameDepthAs(origin);
+
+                Vector2 toMouse = (Vector2)(mouseWorld - origin);
+                if (toMouse.sqrMagnitude > 0.0001f)
+                {
+                    // Keep aim in front of the character (2.5D typical behavior).
+                    toMouse.x = Mathf.Abs(toMouse.x) * facingSign;
+
+                    angleDeg = Mathf.Atan2(toMouse.y, toMouse.x) * Mathf.Rad2Deg;
+                    angleDeg = Mathf.Clamp(angleDeg, _mouseAimAngleClamp.x, _mouseAimAngleClamp.y);
+                }
+            }
+
+            float angleRad = angleDeg * Mathf.Deg2Rad;
+
+            return new Vector3(
+                Mathf.Cos(angleRad) * _throwForce,
+                Mathf.Sin(angleRad) * _throwForce,
+                0f
+            );
+        }
+
+        private Vector3 GetMouseWorldAtSameDepthAs(Vector3 worldPoint)
+        {
+            Camera cam = _aimCamera != null ? _aimCamera : Camera.main;
+            if (cam == null || Mouse.current == null)
+                return worldPoint;
+
+            Vector2 mouseScreen = Mouse.current.position.ReadValue();
+
+            // Critical: use the same camera-space depth as the origin
+            float depth = cam.WorldToScreenPoint(worldPoint).z;
+
+            Vector3 w = cam.ScreenToWorldPoint(new Vector3(mouseScreen.x, mouseScreen.y, depth));
+            w.z = 0f;
+            return w;
+        }
+
+        /// <summary>
         /// Calculates trajectory preview using the projectile formula:
         /// P = origin + velocity*t + 0.5*gravity*t²
         /// Uses the pre-allocated buffer — zero per-frame allocations.
@@ -342,22 +403,6 @@ namespace DScrollerGame.Player
                 Vector3 velocity = CalculateThrowVelocity();
                 rb.AddForce(velocity, ForceMode.VelocityChange);
             }
-        }
-
-        /// <summary>
-        /// Computes the throw velocity vector based on facing direction and throw angle.
-        /// Direction is derived from transform.localScale.x sign (2.5D sprite convention).
-        /// </summary>
-        private Vector3 CalculateThrowVelocity()
-        {
-            float facingSign = Mathf.Sign(transform.localScale.x);
-            float angleRad = _throwAngle * Mathf.Deg2Rad;
-
-            return new Vector3(
-                facingSign * Mathf.Cos(angleRad) * _throwForce,
-                Mathf.Sin(angleRad) * _throwForce,
-                0f // 2.5D — no Z velocity.
-            );
         }
 
         // ================================================================
