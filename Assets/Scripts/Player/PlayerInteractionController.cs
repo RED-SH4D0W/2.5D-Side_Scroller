@@ -45,7 +45,7 @@ namespace DScrollerGame.Player
         [Tooltip("Prefab to instantiate when throwing. Must have Rigidbody + ThrowableObject.")]
         [SerializeField] private GameObject _throwPrefab;
 
-        [Tooltip("Force magnitude applied to the thrown object.")]
+        [Tooltip("Force magnitude applied to the thrown object (before multipliers).")]
         [SerializeField] private float _throwForce = 12f;
 
         [Tooltip("Vertical throw angle in degrees (0 = pure horizontal).")]
@@ -59,6 +59,16 @@ namespace DScrollerGame.Player
 
         [Tooltip("Camera used for aiming. If null, falls back to Camera.main.")]
         [SerializeField] private Camera _aimCamera;
+
+        [Header("Throw Force Multiplier")]
+        [Tooltip("If true, mouse distance from the throw origin scales the throw force (farther mouse = bigger force). Keep this OFF for gamepad/dpad-only setups.")]
+        [SerializeField] private bool _useMouseForceMultiplier = true;
+
+        [Tooltip("World-space mouse distance that maps to Max Force Multiplier (distances beyond this clamp).")]
+        [SerializeField] private float _mouseForceMaxDistance = 6f;
+
+        [Tooltip("Min/Max multiplier applied to _throwForce when using mouse distance scaling.")]
+        [SerializeField] private Vector2 _mouseForceMultiplierClamp = new Vector2(0.35f, 1.5f);
 
         // ================================================================
         // INSPECTOR – Trajectory Preview
@@ -289,22 +299,55 @@ namespace DScrollerGame.Player
             }
         }
 
+        // ================================================================
+        // THROW MATH
+        // ================================================================
+
+        private float CalculateThrowForceMultiplier(Vector3 origin)
+        {
+            if (!_useMouseForceMultiplier) return 1f;
+
+            Camera cam = _aimCamera != null ? _aimCamera : Camera.main;
+            if (cam == null || Mouse.current == null) return 1f;
+
+            Vector3 mouseWorld = GetMouseWorldAtSameDepthAs(origin);
+            Vector2 toMouse = (Vector2)(mouseWorld - origin);
+
+            float maxDist = Mathf.Max(0.0001f, _mouseForceMaxDistance);
+            float t = Mathf.Clamp01(toMouse.magnitude / maxDist);
+
+            float minMul = _mouseForceMultiplierClamp.x;
+            float maxMul = _mouseForceMultiplierClamp.y;
+
+            // If someone sets them backwards in the inspector, keep it sane.
+            if (maxMul < minMul)
+            {
+                float tmp = minMul;
+                minMul = maxMul;
+                maxMul = tmp;
+            }
+
+            return Mathf.Lerp(minMul, maxMul, t);
+        }
+
         /// <summary>
         /// Computes the throw velocity vector.
         /// If Aim With Mouse is enabled, the aim angle is derived from mouse position.
         /// Otherwise, uses facing direction and fixed throw angle.
+        ///
+        /// Arc distance is reduced/increased by scaling force with a multiplier (mouse distance when enabled).
         /// </summary>
         private Vector3 CalculateThrowVelocity()
         {
             float facingSign = Mathf.Sign(transform.localScale.x);
 
+            Vector3 origin = _throwOrigin != null ? _throwOrigin.position : transform.position;
+            origin.z = 0f;
+
             float angleDeg = _throwAngle;
 
             if (_aimWithMouse)
             {
-                Vector3 origin = _throwOrigin != null ? _throwOrigin.position : transform.position;
-                origin.z = 0f;
-
                 Vector3 mouseWorld = GetMouseWorldAtSameDepthAs(origin);
 
                 Vector2 toMouse = (Vector2)(mouseWorld - origin);
@@ -318,11 +361,14 @@ namespace DScrollerGame.Player
                 }
             }
 
+            float forceMultiplier = CalculateThrowForceMultiplier(origin);
+            float effectiveForce = _throwForce * forceMultiplier;
+
             float angleRad = angleDeg * Mathf.Deg2Rad;
 
             return new Vector3(
-                Mathf.Cos(angleRad) * _throwForce,
-                Mathf.Sin(angleRad) * _throwForce,
+                Mathf.Cos(angleRad) * effectiveForce,
+                Mathf.Sin(angleRad) * effectiveForce,
                 0f
             );
         }
