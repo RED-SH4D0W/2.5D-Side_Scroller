@@ -63,10 +63,18 @@ namespace DScrollerGame.Player
         private bool _isCharging;
         private Vector3[] _trajectoryBuffer;
         private float _currentAimAngle;
+        private Collider[] _playerColliders;
 
         private void Awake()
         {
             _trajectoryBuffer = new Vector3[_trajectoryPoints];
+
+            // Cache player colliders to ignore them when throwing.
+            _playerColliders = GetComponentsInParent<Collider>();
+            if (_playerColliders == null || _playerColliders.Length == 0)
+            {
+                _playerColliders = GetComponentsInChildren<Collider>();
+            }
 
             if (_throwOrigin == null)
                 _throwOrigin = transform;
@@ -233,6 +241,17 @@ namespace DScrollerGame.Player
 
             GameObject thrown = Instantiate(_throwPrefab, spawnPosition, Quaternion.identity);
             Rigidbody rb = thrown.GetComponent<Rigidbody>();
+
+            // Ignore collision with player
+            Collider thrownCollider = thrown.GetComponent<Collider>();
+            if (thrownCollider != null && _playerColliders != null)
+            {
+                foreach (var playerCol in _playerColliders)
+                {
+                    if (playerCol != null)
+                        Physics.IgnoreCollision(thrownCollider, playerCol);
+                }
+            }
 
             if (rb != null)
             {

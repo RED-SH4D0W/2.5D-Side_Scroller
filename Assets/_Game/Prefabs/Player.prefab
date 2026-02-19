@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3035659173370412341}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: ThrowOrigin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 3878108460202454187}
   - component: {fileID: 5464003781957967790}
   - component: {fileID: 4714273643861467860}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: aim_crosshair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,7 +158,7 @@ GameObject:
   - component: {fileID: 6974767605706733333}
   - component: {fileID: 8448866830692029547}
   - component: {fileID: 7816304147939911093}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -420,7 +420,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3772536016823158262}
   - component: {fileID: 5714748277037394486}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ThrowingEffects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -564,7 +564,7 @@ GameObject:
   - component: {fileID: 7614359889129108153}
   - component: {fileID: 2919993179111239818}
   - component: {fileID: 8033828511120479003}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
