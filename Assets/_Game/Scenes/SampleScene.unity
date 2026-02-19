@@ -1047,6 +1047,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5714748277037394486, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 5dc53c442e7874c23a70988a2bde84e6, type: 2}
     - target: {fileID: 7816304147939911093, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
       propertyPath: _aimCamera
       value: 
