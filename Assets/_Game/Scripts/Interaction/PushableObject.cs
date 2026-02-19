@@ -54,7 +54,7 @@ namespace DScrollerGame.Interaction
         private bool _isBeingPushed;
 
         /// <summary>Cached reference to the player driving the push.</summary>
-        private PlayerInteractionController _pusher;
+        // private PlayerInteractionController _pusher;
 
         /// <summary>Rigidbody on this object.</summary>
         private Rigidbody _rb;
@@ -84,28 +84,28 @@ namespace DScrollerGame.Interaction
                             | RigidbodyConstraints.FreezeRotationZ;
         }
 
-        private void FixedUpdate()
-        {
-            if (!_isBeingPushed || _pusher == null) return;
-
-            // Determine push direction from the player's position relative to this object.
-            //float direction = Mathf.Sign(transform.position.x - _pusher.transform.position.x);
-            //Vector3 force = new Vector3(direction * _pushForce, 0f, 0f);
-            
-            float direction = Mathf.Sign(_pusher.transform.localScale.x);
-            Vector3 force = new Vector3(direction * _pushForce, 0f, 0f);
-            
-            _rb.AddForce(force, ForceMode.Force);
-
-            // Emit noise periodically while pushing.
-            _noiseTimer += Time.fixedDeltaTime;
-
-            if (_noiseTimer >= _noiseInterval)
-            {
-                _noiseTimer = 0f;
-                EmitNoise(_pushNoise, transform.position);
-            }
-        }
+        // private void FixedUpdate()
+        // {
+        //     if (!_isBeingPushed || _pusher == null) return;
+        //
+        //     // Determine push direction from the player's position relative to this object.
+        //     //float direction = Mathf.Sign(transform.position.x - _pusher.transform.position.x);
+        //     //Vector3 force = new Vector3(direction * _pushForce, 0f, 0f);
+        //     
+        //     // float direction = Mathf.Sign(_pusher.transform.localScale.x);
+        //     Vector3 force = new Vector3(direction * _pushForce, 0f, 0f);
+        //     
+        //     _rb.AddForce(force, ForceMode.Force);
+        //
+        //     // Emit noise periodically while pushing.
+        //     _noiseTimer += Time.fixedDeltaTime;
+        //
+        //     if (_noiseTimer >= _noiseInterval)
+        //     {
+        //         _noiseTimer = 0f;
+        //         EmitNoise(_pushNoise, transform.position);
+        //     }
+        // }
 
         // ================================================================
         // IInteractable
@@ -116,23 +116,23 @@ namespace DScrollerGame.Interaction
         /// Called by PlayerInteractionController when the player presses E.
         /// </summary>
         /// <param name="player">The interaction controller initiating the push.</param>
-        public void Interact(PlayerInteractionController player)
-        {
-            if (_isBeingPushed)
-            {
-                // Disengage push.
-                _isBeingPushed = false;
-                _pusher = null;
-                _noiseTimer = 0f;
-            }
-            else
-            {
-                // Engage push.
-                _isBeingPushed = true;
-                _pusher = player;
-                _noiseTimer = 0f;
-            }
-        }
+        // public void Interact(PlayerInteractionController player)
+        // {
+        //     if (_isBeingPushed)
+        //     {
+        //         // Disengage push.
+        //         _isBeingPushed = false;
+        //         _pusher = null;
+        //         _noiseTimer = 0f;
+        //     }
+        //     else
+        //     {
+        //         // Engage push.
+        //         _isBeingPushed = true;
+        //         _pusher = player;
+        //         _noiseTimer = 0f;
+        //     }
+        // }
 
         // ================================================================
         // INoiseEmitter

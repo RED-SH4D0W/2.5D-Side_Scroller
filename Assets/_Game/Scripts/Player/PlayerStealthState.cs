@@ -253,31 +253,11 @@ namespace DScrollerGame.Player
 #endif
 
 #if UNITY_EDITOR
-private void OnDrawGizmosSelected()
-{
-    Gizmos.color = Color.red;
-    Gizmos.DrawWireSphere(transform.position, CurrentNoiseRadius);
-}
-#endif
-
-#if UNITY_EDITOR
-private float _debugTimer;
-
-private void LateUpdate()
-{
-    _debugTimer += Time.deltaTime;
-
-    if (_debugTimer >= 0.5f)
-    {
-        _debugTimer = 0f;
-
-        Debug.Log(
-            $"[STEALTH DEBUG]\n" +
-            $"Noise: {CurrentNoise:F2} | Radius: {CurrentNoiseRadius:F2}\n" +
-            $"Visibility: {CurrentVisibility:F2}"
-        );
-    }
-}
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, CurrentNoiseRadius);
+        }
 #endif
     }
 }

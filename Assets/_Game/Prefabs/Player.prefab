@@ -44,8 +44,7 @@ GameObject:
   - component: {fileID: 231194525405492253}
   - component: {fileID: 6974767605706733333}
   - component: {fileID: 8448866830692029547}
-  - component: {fileID: 4157650922274846921}
-  - component: {fileID: 2616197245721512102}
+  - component: {fileID: 7816304147939911093}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -68,6 +67,7 @@ Transform:
   m_Children:
   - {fileID: 8950178885275467777}
   - {fileID: 3035659173370412341}
+  - {fileID: 3772536016823158262}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &7900128154854304093
@@ -271,7 +271,7 @@ MonoBehaviour:
   _visibilitySmoothTime: 0.3
   _movement: {fileID: 0}
   _physicalState: {fileID: 0}
---- !u!114 &4157650922274846921
+--- !u!114 &7816304147939911093
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -280,36 +280,61 @@ MonoBehaviour:
   m_GameObject: {fileID: 3964301817531098844}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d7c8745e680494ba35151ab9e86214, type: 3}
+  m_Script: {fileID: 11500000, guid: bced02a060a54e64bd2118b5c9b5b26f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DScrollerGame.Player.PlayerInteractionController
-  _interactRange: 2
-  _interactableLayer:
-    serializedVersion: 2
-    m_Bits: 4294967295
+  m_EditorClassIdentifier: Assembly-CSharp::DScrollerGame.Player.PlayerThrowController
   _throwOrigin: {fileID: 3035659173370412341}
-  _throwPrefab: {fileID: 7311565984664780845, guid: 26a029fce5eca4494b5bbf410eaf5a14, type: 3}
-  _throwForce: 12
-  _throwAngle: 30
-  _aimWithMouse: 1
-  _mouseAimAngleClamp: {x: -10, y: 80}
+  _throwPrefab: {fileID: 2015208805764271592, guid: f23447c6231e045ecb1ec9b1a17b04cf, type: 3}
   _aimCamera: {fileID: 0}
-  _useMouseForceMultiplier: 1
-  _mouseForceMaxDistance: 25
-  _mouseForceMultiplierClamp: {x: 0.5, y: 1.5}
-  _trajectoryLine: {fileID: 2616197245721512102}
+  _minThrowForce: 5
+  _maxThrowForce: 20
+  _chargeSpeed: 10
+  _aimAngleClamp: {x: -10, y: 80}
+  _trajectoryLine: {fileID: 5714748277037394486}
   _trajectoryPoints: 25
   _trajectoryTimeStep: 0.05
-  _slashNoise: 0.3
-  _pushDisengageRange: 3
---- !u!120 &2616197245721512102
+  _aimPointer: {fileID: 0}
+  _powerMeterBar: {fileID: 0}
+--- !u!1 &4413092600005709832
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3772536016823158262}
+  - component: {fileID: 5714748277037394486}
+  m_Layer: 0
+  m_Name: ThrowingEffects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3772536016823158262
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4413092600005709832}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2185511859577830242}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!120 &5714748277037394486
 LineRenderer:
   serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3964301817531098844}
+  m_GameObject: {fileID: 4413092600005709832}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1

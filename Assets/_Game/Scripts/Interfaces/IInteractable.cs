@@ -14,6 +14,6 @@ namespace DScrollerGame.Interfaces
         /// Reference to the interaction controller — used ONLY for positional queries
         /// (e.g., checking range). Must NOT access PlayerStealthState or PlayerPhysicalState.
         /// </param>
-        void Interact(PlayerInteractionController player);
+        // void Interact(PlayerInteractionController player);
     }
 }
