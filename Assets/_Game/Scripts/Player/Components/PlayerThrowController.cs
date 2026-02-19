@@ -55,6 +55,9 @@ namespace DScrollerGame.Player
         [Tooltip("UI or world-space transform for the power meter. Scales based on charge.")]
         [SerializeField] private Transform _powerMeterBar;
 
+        [Tooltip("How far the aim pointer is from the throw origin.")]
+        [SerializeField] private float _aimPointerOffset = 0.5f;
+
         // Private state
         private float _currentThrowForce;
         private bool _isCharging;
@@ -169,7 +172,14 @@ namespace DScrollerGame.Player
 
             if (_aimPointer != null)
             {
-                _aimPointer.position = _throwOrigin.position;
+                float angleRad = _currentAimAngle * Mathf.Deg2Rad;
+                Vector3 offsetVector = new Vector3(
+                    Mathf.Cos(angleRad) * _aimPointerOffset,
+                    Mathf.Sin(angleRad) * _aimPointerOffset,
+                    0f
+                );
+
+                _aimPointer.position = _throwOrigin.position + offsetVector;
                 _aimPointer.rotation = Quaternion.Euler(0, 0, _currentAimAngle);
             }
         }
