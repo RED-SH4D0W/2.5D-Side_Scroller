@@ -9,13 +9,26 @@ namespace DScrollerGame.Interfaces
     public interface IBreakable
     {
         /// <summary>
+        /// The current amount of damage this object has taken.
+        /// </summary>
+        float CurrentDamage { get; }
+
+        /// <summary>
+        /// The maximum damage this object can take before breaking.
+        /// </summary>
+        float MaxDamage { get; }
+
+        /// <summary>
         /// Called when a thrown object collides with this breakable.
         /// </summary>
-        /// <param name="impactForce">
-        /// Normalized impact force (0–1), derived from collision magnitude
-        /// divided by a configurable maxImpactForce threshold, then clamped.
-        /// </param>
+        /// <param name="damage">The amount of damage to apply.</param>
         /// <param name="impactPoint">World-space point of collision.</param>
-        void Break(float impactForce, Vector3 impactPoint);
+        void ApplyDamage(float damage, Vector3 impactPoint);
+
+        /// <summary>
+        /// Immediately breaks the object.
+        /// </summary>
+        /// <param name="impactPoint">World-space point of collision.</param>
+        void Break(Vector3 impactPoint);
     }
 }

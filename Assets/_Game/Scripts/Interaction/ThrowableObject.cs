@@ -29,6 +29,12 @@ namespace DScrollerGame.Interaction
         // ================================================================
 
         [Header("Impact")]
+        [Tooltip("Damage dealt to breakable objects.")]
+        [SerializeField] private float _damage = 10f;
+
+        [Tooltip("Minimum normalized impact force (0–1) required to deal damage.")]
+        [SerializeField] private float _impactThreshold = 0.2f;
+
         [Tooltip("Maximum expected impact force magnitude. Used to normalize collision force to 0–1.")]
         [SerializeField] private float _maxImpactForce = 20f;
 
@@ -91,8 +97,12 @@ namespace DScrollerGame.Interaction
             Vector3 impactPoint = collision.contacts[0].point;
 
             IBreakable breakable = collision.collider.GetComponent<IBreakable>();
-            if (breakable != null)
-                breakable.Break(normalized, impactPoint);
+            if (breakable != null && normalized >= _impactThreshold)
+            {
+                // Apply damage scaled by normalized impact force
+                float appliedDamage = _damage * normalized;
+                breakable.ApplyDamage(appliedDamage, impactPoint);
+            }
 
             INoiseEmitter noise = collision.collider.GetComponent<INoiseEmitter>();
             if (noise != null)
@@ -108,6 +118,8 @@ namespace DScrollerGame.Interaction
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            _damage = Mathf.Max(0f, _damage);
+            _impactThreshold = Mathf.Clamp01(_impactThreshold);
             _maxImpactForce = Mathf.Max(0.1f, _maxImpactForce);
             _lifetime = Mathf.Max(1f, _lifetime);
         }

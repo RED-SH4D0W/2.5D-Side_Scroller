@@ -22,20 +22,13 @@ namespace DScrollerGame.Interaction
     /// • EmitNoise currently logs only — future Phase 5 will route through Noise Manager.
     /// • Noise is WORLD-BASED, not player-based.
     /// </summary>
-    public class BreakableLight : MonoBehaviour, IBreakable, INoiseEmitter
+    public class BreakableLight : BreakableBase
     {
         // ================================================================
         // INSPECTOR
         // ================================================================
 
-        [Header("Break Settings")]
-        [Tooltip("Minimum normalized impact force (0–1) required to break this light.")]
-        [SerializeField] private float _breakThreshold = 0.4f;
-
-        [Tooltip("Normalized noise emitted when this light breaks (0–1).")]
-        [SerializeField] private float _breakNoise = 0.6f;
-
-        [Header("References")]
+        [Header("Light Specifics")]
         [Tooltip("The Light component to disable on break. Auto-resolved if left empty.")]
         [SerializeField] private Light _lightComponent;
 
@@ -44,20 +37,6 @@ namespace DScrollerGame.Interaction
 
         [Tooltip("Optional: Material to apply when the light is broken (e.g., no emissive glow).")]
         [SerializeField] private Material _brokenMaterial;
-
-        // ================================================================
-        // PRIVATE STATE
-        // ================================================================
-
-        /// <summary>Idempotency guard — prevents multiple breaks.</summary>
-        private bool _isBroken;
-
-        // ================================================================
-        // PUBLIC — State
-        // ================================================================
-
-        /// <summary>True after this light has been broken.</summary>
-        public bool IsBroken => _isBroken;
 
         // ================================================================
         // LIFECYCLE
@@ -71,26 +50,11 @@ namespace DScrollerGame.Interaction
         }
 
         // ================================================================
-        // IBreakable
+        // BREAKABLE BASE IMPLEMENTATION
         // ================================================================
 
-        /// <summary>
-        /// Called when a thrown object impacts this light.
-        /// If impact force meets the threshold and the light is not already broken,
-        /// the Light component is disabled and noise is emitted.
-        /// </summary>
-        /// <param name="impactForce">Normalized impact force (0–1).</param>
-        /// <param name="impactPoint">World-space collision point.</param>
-        public void Break(float impactForce, Vector3 impactPoint)
+        protected override void OnBreak(Vector3 impactPoint)
         {
-            // --- Idempotency guard: cannot break twice ---
-            if (_isBroken) return;
-
-            // --- Threshold check ---
-            if (impactForce < _breakThreshold) return;
-
-            _isBroken = true;
-
             // --- Disable actual Light component (REAL darkness) ---
             if (_lightComponent != null)
                 _lightComponent.enabled = false;
@@ -98,31 +62,6 @@ namespace DScrollerGame.Interaction
             // --- Optional: swap to broken material (no emissive glow) ---
             if (_emissiveRenderer != null && _brokenMaterial != null)
                 _emissiveRenderer.material = _brokenMaterial;
-
-            // --- Emit break noise into the world ---
-            EmitNoise(_breakNoise, impactPoint);
-        }
-
-        // ================================================================
-        // INoiseEmitter
-        // ================================================================
-
-        /// <summary>
-        /// Emits a noise event at the specified world position.
-        ///
-        /// CURRENT: Debug.Log only.
-        /// FUTURE (Phase 5): Route through centralized Noise Manager for AI hearing.
-        /// No object should directly modify PlayerStealthState.
-        /// </summary>
-        /// <param name="normalizedAmount">Noise intensity (0–1).</param>
-        /// <param name="position">World-space origin of the noise.</param>
-        public void EmitNoise(float normalizedAmount, Vector3 position)
-        {
-            // FUTURE: NoiseManager.Instance.RegisterNoise(normalizedAmount, position);
-            Debug.Log(
-                $"[BreakableLight Noise] intensity={normalizedAmount:F2} " +
-                $"position={position} broken={_isBroken}"
-            );
         }
 
         // ================================================================
@@ -130,10 +69,9 @@ namespace DScrollerGame.Interaction
         // ================================================================
 
 #if UNITY_EDITOR
-        private void OnValidate()
+        protected override void OnValidate()
         {
-            _breakThreshold = Mathf.Clamp01(_breakThreshold);
-            _breakNoise = Mathf.Clamp01(_breakNoise);
+            base.OnValidate();
         }
 #endif
     }
