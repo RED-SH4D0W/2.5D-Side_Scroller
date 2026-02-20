@@ -66,6 +66,16 @@ namespace DScrollerGame.Player
         [SerializeField] private PlayerPhysicalState _physicalState;
 
         // ================================================================
+        // INSPECTOR – Input
+        // ================================================================
+
+        [Header("Input Actions")]
+        [SerializeField] private InputActionReference _moveAction;
+        [SerializeField] private InputActionReference _sprintAction;
+        [SerializeField] private InputActionReference _jumpAction;
+        [SerializeField] private InputActionReference _crouchAction;
+
+        // ================================================================
         // PRIVATE STATE
         // ================================================================
 
@@ -98,6 +108,22 @@ namespace DScrollerGame.Player
                 _physicalState = GetComponent<PlayerPhysicalState>();
         }
 
+        private void OnEnable()
+        {
+            if (_moveAction != null) _moveAction.action.Enable();
+            if (_sprintAction != null) _sprintAction.action.Enable();
+            if (_jumpAction != null) _jumpAction.action.Enable();
+            if (_crouchAction != null) _crouchAction.action.Enable();
+        }
+
+        private void OnDisable()
+        {
+            if (_moveAction != null) _moveAction.action.Disable();
+            if (_sprintAction != null) _sprintAction.action.Disable();
+            if (_jumpAction != null) _jumpAction.action.Disable();
+            if (_crouchAction != null) _crouchAction.action.Disable();
+        }
+
         private void Update()
         {
             ReadInput();
@@ -117,20 +143,32 @@ namespace DScrollerGame.Player
         private void ReadInput()
         {
             _inputX = 0f;
-            if (Keyboard.current.aKey.isPressed) _inputX -= 1f;
-            if (Keyboard.current.dKey.isPressed) _inputX += 1f;
+            if (_moveAction != null)
+            {
+                // Reading Vector2 as per project's new input configuration
+                Vector2 moveValue = _moveAction.action.ReadValue<Vector2>();
+                _inputX = moveValue.x;
+            }
 
-            _inputSprint = Keyboard.current.leftShiftKey.isPressed &&
-                           !IsCrouching &&
-                           IsGrounded &&
-                           _physicalState.HasStaminaForSprint; // PHASE 2 MODIFICATION
+            _inputSprint = false;
+            if (_sprintAction != null)
+            {
+                _inputSprint = _sprintAction.action.IsPressed() &&
+                               !IsCrouching &&
+                               IsGrounded &&
+                               _physicalState.HasStaminaForSprint; // PHASE 2 MODIFICATION
+            }
 
-            _wantsToCrouch = Keyboard.current.leftCtrlKey.isPressed;
+            _wantsToCrouch = false;
+            if (_crouchAction != null)
+            {
+                _wantsToCrouch = _crouchAction.action.IsPressed();
+            }
 
-            if (Keyboard.current.spaceKey.wasPressedThisFrame)
+            if (_jumpAction != null && _jumpAction.action.WasPressedThisFrame())
                 _jumpBufferTimer = _jumpBufferTime;
 
-            _isHoldingJump = Keyboard.current.spaceKey.isPressed;
+            _isHoldingJump = _jumpAction != null && _jumpAction.action.IsPressed();
         }
 
         // ================================================================

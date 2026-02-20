@@ -830,7 +830,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DScrollerGame.Inventory.Collectable
   _itemData: {fileID: 11400000, guid: 5d50614a50ada4667840f10aed6a2159, type: 2}
   _playerTag: Player
-  _autoPickup: 0
+  _autoPickup: 1
+  _pickupAction: {fileID: 0}
 --- !u!136 &1439242135
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1059,7 +1060,7 @@ MonoBehaviour:
   _inventory: {fileID: 1762263238}
   _slotPrefab: {fileID: 0}
   _slotContainer: {fileID: 1616754860}
-  _toggleKey: 105
+  _toggleAction: {fileID: 0}
   _startHidden: 1
 --- !u!114 &1616754862
 MonoBehaviour:
@@ -1123,50 +1124,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1616754859}
   m_CullTransparentMesh: 1
---- !u!1 &1762263231 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3964301817531098844, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
+--- !u!114 &1762263238 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2860605855051311206, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
   m_PrefabInstance: {fileID: 5652036625083364769}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1762263235 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6974767605706733333, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
-  m_PrefabInstance: {fileID: 5652036625083364769}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1762263231}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33464023c615c401dac1c654903cc1a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerPhysicalState
---- !u!114 &1762263238
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1762263231}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1131160c37f7a4c17b0ecc44c9b9ec0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DScrollerGame.Inventory.PlayerInventory
-  _physicalState: {fileID: 1762263235}
-  _playerHealth: {fileID: 1762263239}
---- !u!114 &1762263239
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1762263231}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b23d8ac5890e427ca44de5dd216a2ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DScrollerGame.Player.PlayerHealth
-  _maxHealth: 100
-  _currentHealth: 0
 --- !u!1 &1853796386
 GameObject:
   m_ObjectHideFlags: 0
@@ -1334,6 +1302,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 231194525405492253, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
+      propertyPath: _jumpAction
+      value: 
+      objectReference: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - target: {fileID: 231194525405492253, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
+      propertyPath: _moveAction
+      value: 
+      objectReference: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - target: {fileID: 231194525405492253, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
+      propertyPath: _crouchAction
+      value: 
+      objectReference: {fileID: 7040659881675835329, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     - target: {fileID: 2185511859577830242, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1378,24 +1358,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 4413092600005709832, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7816304147939911093, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
       propertyPath: _aimCamera
       value: 
       objectReference: {fileID: 330585545}
+    - target: {fileID: 7816304147939911093, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
+      propertyPath: _throwAction
+      value: 
+      objectReference: {fileID: 1120369429361536294, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - target: {fileID: 7816304147939911093, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
+      propertyPath: _cancelAction
+      value: 
+      objectReference: {fileID: -8052276107778716828, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - target: {fileID: 7816304147939911093, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
+      propertyPath: _mousePositionAction
+      value: 
+      objectReference: {fileID: -1654692200621890270, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3964301817531098844, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1762263238}
-    - targetCorrespondingSourceObject: {fileID: 3964301817531098844, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1762263239}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

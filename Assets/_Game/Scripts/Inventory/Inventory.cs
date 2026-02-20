@@ -23,11 +23,9 @@ namespace DScrollerGame.Inventory
         [Tooltip("Reference to PlayerHealth for consumable effects.")]
         [SerializeField] private PlayerHealth _playerHealth;
 
-        // ================================================================
-        // PRIVATE STATE
-        // ================================================================
-
-        private readonly List<ItemData> _items = new List<ItemData>();
+        [Header("Starting Items")]
+        [Tooltip("List of items in the inventory. Can be edited in the Inspector.")]
+        [SerializeField] private List<ItemData> _items = new List<ItemData>();
 
         // ================================================================
         // EVENTS

@@ -158,6 +158,8 @@ GameObject:
   - component: {fileID: 6974767605706733333}
   - component: {fileID: 8448866830692029547}
   - component: {fileID: 7816304147939911093}
+  - component: {fileID: 2860605855051311206}
+  - component: {fileID: 1827410934326665282}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -410,6 +412,35 @@ MonoBehaviour:
   _aimPointer: {fileID: 3036095028073375742}
   _powerMeterBar: {fileID: 0}
   _aimPointerOffset: 1.5
+--- !u!114 &2860605855051311206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3964301817531098844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1131160c37f7a4c17b0ecc44c9b9ec0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DScrollerGame.Inventory.PlayerInventory
+  _physicalState: {fileID: 6974767605706733333}
+  _playerHealth: {fileID: 1827410934326665282}
+  _items: []
+--- !u!114 &1827410934326665282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3964301817531098844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b23d8ac5890e427ca44de5dd216a2ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DScrollerGame.Player.PlayerHealth
+  _maxHealth: 100
+  _currentHealth: 0
 --- !u!1 &4413092600005709832
 GameObject:
   m_ObjectHideFlags: 0

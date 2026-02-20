@@ -58,6 +58,16 @@ namespace DScrollerGame.Player
         [Tooltip("How far the aim pointer is from the throw origin.")]
         [SerializeField] private float _aimPointerOffset = 0.5f;
 
+        [Header("Input Actions")]
+        [Tooltip("Action for starting/executing throw (e.g. LMB).")]
+        [SerializeField] private InputActionReference _throwAction;
+
+        [Tooltip("Action for canceling the throw (e.g. C key).")]
+        [SerializeField] private InputActionReference _cancelAction;
+
+        [Tooltip("Action for mouse position (screen coordinates).")]
+        [SerializeField] private InputActionReference _mousePositionAction;
+
         // Private state
         private float _currentThrowForce;
         private bool _isCharging;
@@ -95,6 +105,20 @@ namespace DScrollerGame.Player
                 _powerMeterBar.gameObject.SetActive(false);
         }
 
+        private void OnEnable()
+        {
+            if (_throwAction != null) _throwAction.action.Enable();
+            if (_cancelAction != null) _cancelAction.action.Enable();
+            if (_mousePositionAction != null) _mousePositionAction.action.Enable();
+        }
+
+        private void OnDisable()
+        {
+            if (_throwAction != null) _throwAction.action.Disable();
+            if (_cancelAction != null) _cancelAction.action.Disable();
+            if (_mousePositionAction != null) _mousePositionAction.action.Disable();
+        }
+
         private void Update()
         {
             HandleInput();
@@ -109,21 +133,24 @@ namespace DScrollerGame.Player
 
         private void HandleInput()
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+            if (_throwAction != null)
             {
-                StartCharging();
+                if (_throwAction.action.WasPressedThisFrame())
+                {
+                    StartCharging();
+                }
+
+                if (_throwAction.action.WasReleasedThisFrame() && _isCharging)
+                {
+                    ExecuteThrow();
+                    StopCharging();
+                }
             }
 
-            if (_isCharging && Keyboard.current.cKey.wasPressedThisFrame)
+            if (_isCharging && _cancelAction != null && _cancelAction.action.WasPressedThisFrame())
             {
                 StopCharging();
                 return;
-            }
-
-            if (Mouse.current.leftButton.wasReleasedThisFrame && _isCharging)
-            {
-                ExecuteThrow();
-                StopCharging();
             }
         }
 
@@ -264,9 +291,9 @@ namespace DScrollerGame.Player
         private Vector3 GetMouseWorldAtSameDepthAs(Vector3 worldPoint)
         {
             Camera cam = _aimCamera != null ? _aimCamera : Camera.main;
-            if (cam == null || Mouse.current == null) return worldPoint;
+            if (cam == null || _mousePositionAction == null) return worldPoint;
 
-            Vector2 mouseScreen = Mouse.current.position.ReadValue();
+            Vector2 mouseScreen = _mousePositionAction.action.ReadValue<Vector2>();
             float depth = cam.WorldToScreenPoint(worldPoint).z;
             Vector3 w = cam.ScreenToWorldPoint(new Vector3(mouseScreen.x, mouseScreen.y, depth));
             w.z = 0f;

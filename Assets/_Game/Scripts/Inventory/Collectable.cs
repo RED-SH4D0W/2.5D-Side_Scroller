@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace DScrollerGame.Inventory
 {
@@ -30,8 +31,18 @@ namespace DScrollerGame.Inventory
         [SerializeField] private string _playerTag = "Player";
 
         [Tooltip("If true, the item is picked up automatically on contact. " +
-                 "If false, pickup must be triggered manually via Collect().")]
+                 "If false, pickup must be triggered manually.")]
         [SerializeField] private bool _autoPickup = true;
+
+        [Header("Manual Pickup Input")]
+        [Tooltip("Action reference for manual pickup (Interact).")]
+        [SerializeField] private InputActionReference _pickupAction;
+
+        // ================================================================
+        // PRIVATE STATE
+        // ================================================================
+
+        private GameObject _playerInRange;
 
         // ================================================================
         // ICollectable
@@ -73,16 +84,56 @@ namespace DScrollerGame.Inventory
         }
 
         // ================================================================
+        // LIFECYCLE
+        // ================================================================
+
+        private void OnEnable()
+        {
+            if (_pickupAction != null)
+                _pickupAction.action.Enable();
+        }
+
+        private void OnDisable()
+        {
+            if (_pickupAction != null)
+                _pickupAction.action.Disable();
+        }
+
+        private void Update()
+        {
+            if (_autoPickup || _playerInRange == null) return;
+
+            // Manual pickup via input action
+            if (_pickupAction != null && _pickupAction.action.WasPressedThisFrame())
+            {
+                Collect(_playerInRange);
+            }
+        }
+
+        // ================================================================
         // TRIGGER PICKUP
         // ================================================================
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!_autoPickup) return;
-
             if (other.CompareTag(_playerTag))
             {
-                Collect(other.gameObject);
+                if (_autoPickup)
+                {
+                    Collect(other.gameObject);
+                }
+                else
+                {
+                    _playerInRange = other.gameObject;
+                }
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.CompareTag(_playerTag))
+            {
+                _playerInRange = null;
             }
         }
 

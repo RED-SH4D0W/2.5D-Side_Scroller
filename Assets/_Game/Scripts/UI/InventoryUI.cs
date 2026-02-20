@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DScrollerGame.Inventory;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace DScrollerGame.UI
 {
@@ -34,8 +35,8 @@ namespace DScrollerGame.UI
         [SerializeField] private Transform _slotContainer;
 
         [Header("Toggle")]
-        [Tooltip("Key to toggle the inventory panel on/off.")]
-        [SerializeField] private KeyCode _toggleKey = KeyCode.I;
+        [Tooltip("Action reference to toggle the inventory panel (e.g. 'I' key).")]
+        [SerializeField] private InputActionReference _toggleAction;
 
         [Tooltip("Should the inventory panel start hidden?")]
         [SerializeField] private bool _startHidden = true;
@@ -75,6 +76,9 @@ namespace DScrollerGame.UI
                 _inventory.OnItemRemoved += HandleItemRemoved;
                 _inventory.OnItemConsumed += HandleItemRemoved; // same visual effect
             }
+
+            if (_toggleAction != null)
+                _toggleAction.action.Enable();
         }
 
         private void OnDisable()
@@ -85,6 +89,9 @@ namespace DScrollerGame.UI
                 _inventory.OnItemRemoved -= HandleItemRemoved;
                 _inventory.OnItemConsumed -= HandleItemRemoved;
             }
+
+            if (_toggleAction != null)
+                _toggleAction.action.Disable();
         }
 
         private void Start()
@@ -102,7 +109,7 @@ namespace DScrollerGame.UI
 
         private void Update()
         {
-            if (Input.GetKeyDown(_toggleKey))
+            if (_toggleAction != null && _toggleAction.action.WasPressedThisFrame())
             {
                 TogglePanel();
             }
