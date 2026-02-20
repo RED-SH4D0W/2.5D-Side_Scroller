@@ -1,3 +1,4 @@
+using DScrollerGame.Interaction;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -57,6 +58,7 @@ namespace DScrollerGame.Player
         public bool IsCrouching { get; private set; }
         public float CurrentSpeed { get; private set; }
         public float VerticalVelocity => _verticalVelocity;
+        public InputActionReference InteractAction => _interactAction;
 
         // ================================================================
         // INSPECTOR – Physical State  (PHASE 2)
@@ -74,6 +76,7 @@ namespace DScrollerGame.Player
         [SerializeField] private InputActionReference _sprintAction;
         [SerializeField] private InputActionReference _jumpAction;
         [SerializeField] private InputActionReference _crouchAction;
+        [SerializeField] private InputActionReference _interactAction;
 
         // ================================================================
         // PRIVATE STATE
@@ -114,6 +117,7 @@ namespace DScrollerGame.Player
             if (_sprintAction != null) _sprintAction.action.Enable();
             if (_jumpAction != null) _jumpAction.action.Enable();
             if (_crouchAction != null) _crouchAction.action.Enable();
+            if (_interactAction != null) _interactAction.action.Enable();
         }
 
         private void OnDisable()
@@ -122,6 +126,7 @@ namespace DScrollerGame.Player
             if (_sprintAction != null) _sprintAction.action.Disable();
             if (_jumpAction != null) _jumpAction.action.Disable();
             if (_crouchAction != null) _crouchAction.action.Disable();
+            if (_interactAction != null) _interactAction.action.Disable();
         }
 
         private void Update()
@@ -361,6 +366,16 @@ namespace DScrollerGame.Player
             CurrentSpeed = Mathf.Abs(_horizontalVelocity);
             IsMoving = CurrentSpeed > 0.01f;
             IsSprinting = _inputSprint && IsMoving;
+        }
+
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            // Specifically look for PushableObject
+            var pushable = hit.collider.GetComponent<PushableObject>();
+            if (pushable != null)
+            {
+                pushable.TryPush(transform);
+            }
         }
 
 #if UNITY_EDITOR
