@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using DScrollerGame.Player;
 
 namespace DScrollerGame.Inventory
 {
@@ -34,15 +35,11 @@ namespace DScrollerGame.Inventory
                  "If false, pickup must be triggered manually.")]
         [SerializeField] private bool _autoPickup = true;
 
-        [Header("Manual Pickup Input")]
-        [Tooltip("Action reference for manual pickup (Interact).")]
-        [SerializeField] private InputActionReference _pickupAction;
-
         // ================================================================
         // PRIVATE STATE
         // ================================================================
 
-        private GameObject _playerInRange;
+        private PlayerThrowController _playerInRange;
 
         // ================================================================
         // ICollectable
@@ -87,33 +84,6 @@ namespace DScrollerGame.Inventory
         // LIFECYCLE
         // ================================================================
 
-        private void OnEnable()
-        {
-            if (_pickupAction != null)
-                _pickupAction.action.Enable();
-        }
-
-        private void OnDisable()
-        {
-            if (_pickupAction != null)
-                _pickupAction.action.Disable();
-        }
-
-        private void Update()
-        {
-            if (_autoPickup || _playerInRange == null) return;
-
-            // Manual pickup via input action
-            if (_pickupAction != null && _pickupAction.action.WasPressedThisFrame())
-            {
-                Collect(_playerInRange);
-            }
-        }
-
-        // ================================================================
-        // TRIGGER PICKUP
-        // ================================================================
-
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag(_playerTag))
@@ -124,7 +94,11 @@ namespace DScrollerGame.Inventory
                 }
                 else
                 {
-                    _playerInRange = other.gameObject;
+                    _playerInRange = other.GetComponentInChildren<PlayerThrowController>();
+                    if (_playerInRange != null)
+                    {
+                        _playerInRange.RegisterCollectable(this);
+                    }
                 }
             }
         }
@@ -133,7 +107,20 @@ namespace DScrollerGame.Inventory
         {
             if (other.CompareTag(_playerTag))
             {
-                _playerInRange = null;
+                if (_playerInRange != null)
+                {
+                    _playerInRange.UnregisterCollectable(this);
+                    _playerInRange = null;
+                }
+                else
+                {
+                    // Fallback in case _playerInRange wasn't set but we are exiting the player trigger
+                    var throwCtrl = other.GetComponentInChildren<PlayerThrowController>();
+                    if (throwCtrl != null)
+                    {
+                        throwCtrl.UnregisterCollectable(this);
+                    }
+                }
             }
         }
 

@@ -830,8 +830,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DScrollerGame.Inventory.Collectable
   _itemData: {fileID: 11400000, guid: 5d50614a50ada4667840f10aed6a2159, type: 2}
   _playerTag: Player
-  _autoPickup: 1
-  _pickupAction: {fileID: 0}
+  _autoPickup: 0
 --- !u!136 &1439242135
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1370,6 +1369,10 @@ PrefabInstance:
       propertyPath: _cancelAction
       value: 
       objectReference: {fileID: -8052276107778716828, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - target: {fileID: 7816304147939911093, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
+      propertyPath: _pickupAction
+      value: 
+      objectReference: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     - target: {fileID: 7816304147939911093, guid: 28e50485ed9db441cb26672a4ea5c52f, type: 3}
       propertyPath: _mousePositionAction
       value: 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using DScrollerGame.Inventory;
 
 namespace DScrollerGame.Player
 {
@@ -68,12 +69,16 @@ namespace DScrollerGame.Player
         [Tooltip("Action for mouse position (screen coordinates).")]
         [SerializeField] private InputActionReference _mousePositionAction;
 
+        [Tooltip("Action for picking up items (e.g. E key).")]
+        [SerializeField] private InputActionReference _pickupAction;
+
         // Private state
         private float _currentThrowForce;
         private bool _isCharging;
         private Vector3[] _trajectoryBuffer;
         private float _currentAimAngle;
         private Collider[] _playerColliders;
+        private readonly System.Collections.Generic.List<Collectable> _nearbyCollectables = new System.Collections.Generic.List<Collectable>();
 
         private void Awake()
         {
@@ -110,6 +115,7 @@ namespace DScrollerGame.Player
             if (_throwAction != null) _throwAction.action.Enable();
             if (_cancelAction != null) _cancelAction.action.Enable();
             if (_mousePositionAction != null) _mousePositionAction.action.Enable();
+            if (_pickupAction != null) _pickupAction.action.Enable();
         }
 
         private void OnDisable()
@@ -117,6 +123,7 @@ namespace DScrollerGame.Player
             if (_throwAction != null) _throwAction.action.Disable();
             if (_cancelAction != null) _cancelAction.action.Disable();
             if (_mousePositionAction != null) _mousePositionAction.action.Disable();
+            if (_pickupAction != null) _pickupAction.action.Disable();
         }
 
         private void Update()
@@ -133,6 +140,11 @@ namespace DScrollerGame.Player
 
         private void HandleInput()
         {
+            if (_pickupAction != null && _pickupAction.action.WasPressedThisFrame())
+            {
+                TryPickup();
+            }
+
             if (_throwAction != null)
             {
                 if (_throwAction.action.WasPressedThisFrame())
@@ -298,6 +310,58 @@ namespace DScrollerGame.Player
             Vector3 w = cam.ScreenToWorldPoint(new Vector3(mouseScreen.x, mouseScreen.y, depth));
             w.z = 0f;
             return w;
+        }
+
+        // ================================================================
+        // PICKUP LOGIC
+        // ================================================================
+
+        public void RegisterCollectable(Collectable collectable)
+        {
+            if (!_nearbyCollectables.Contains(collectable))
+            {
+                _nearbyCollectables.Add(collectable);
+            }
+        }
+
+        public void UnregisterCollectable(Collectable collectable)
+        {
+            if (_nearbyCollectables.Contains(collectable))
+            {
+                _nearbyCollectables.Remove(collectable);
+            }
+        }
+
+        private void TryPickup()
+        {
+            if (_nearbyCollectables.Count == 0) return;
+
+            // Simple logic: pick the first one in the list (or nearest if preferred)
+            Collectable nearest = null;
+            float minDistance = float.MaxValue;
+
+            for (int i = _nearbyCollectables.Count - 1; i >= 0; i--)
+            {
+                var c = _nearbyCollectables[i];
+                if (c == null)
+                {
+                    _nearbyCollectables.RemoveAt(i);
+                    continue;
+                }
+
+                float dist = Vector3.Distance(transform.position, c.transform.position);
+                if (dist < minDistance)
+                {
+                    minDistance = dist;
+                    nearest = c;
+                }
+            }
+
+            if (nearest != null)
+            {
+                nearest.Collect(gameObject);
+                _nearbyCollectables.Remove(nearest);
+            }
         }
     }
 }
