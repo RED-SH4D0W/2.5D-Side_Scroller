@@ -39,8 +39,6 @@ namespace DScrollerGame.Inventory
         // PRIVATE STATE
         // ================================================================
 
-        private PlayerThrowController _playerInRange;
-
         // ================================================================
         // ICollectable
         // ================================================================
@@ -94,10 +92,10 @@ namespace DScrollerGame.Inventory
                 }
                 else
                 {
-                    _playerInRange = other.GetComponentInChildren<PlayerThrowController>();
-                    if (_playerInRange != null)
+                    var throwCtrl = PlayerThrowController.Get(other);
+                    if (throwCtrl != null)
                     {
-                        _playerInRange.RegisterCollectable(this);
+                        throwCtrl.RegisterCollectable(this);
                     }
                 }
             }
@@ -107,19 +105,10 @@ namespace DScrollerGame.Inventory
         {
             if (other.CompareTag(_playerTag))
             {
-                if (_playerInRange != null)
+                var throwCtrl = PlayerThrowController.Get(other);
+                if (throwCtrl != null)
                 {
-                    _playerInRange.UnregisterCollectable(this);
-                    _playerInRange = null;
-                }
-                else
-                {
-                    // Fallback in case _playerInRange wasn't set but we are exiting the player trigger
-                    var throwCtrl = other.GetComponentInChildren<PlayerThrowController>();
-                    if (throwCtrl != null)
-                    {
-                        throwCtrl.UnregisterCollectable(this);
-                    }
+                    throwCtrl.UnregisterCollectable(this);
                 }
             }
         }

@@ -72,6 +72,35 @@ namespace DScrollerGame.Player
         [Tooltip("Action for picking up items (e.g. E key).")]
         [SerializeField] private InputActionReference _pickupAction;
 
+        // Static Lookup Registry
+        private static readonly System.Collections.Generic.Dictionary<GameObject, PlayerThrowController> _instances = 
+            new System.Collections.Generic.Dictionary<GameObject, PlayerThrowController>();
+
+        /// <summary>
+        /// Retrieves the PlayerThrowController for a given GameObject or its parent.
+        /// Useful for fast lookup in trigger events without GetComponentInChildren.
+        /// </summary>
+        public static PlayerThrowController Get(GameObject go)
+        {
+            if (go == null) return null;
+            
+            // 1. Direct match (Root or specific GO)
+            if (_instances.TryGetValue(go, out var ctrl)) return ctrl;
+            
+            // 2. Try parent if this is a child collider
+            Transform parent = go.transform.parent;
+            while (parent != null)
+            {
+                if (_instances.TryGetValue(parent.gameObject, out ctrl)) return ctrl;
+                parent = parent.parent;
+            }
+            
+            return null;
+        }
+
+        /// <summary>Convenience overload for Colliders.</summary>
+        public static PlayerThrowController Get(Collider col) => col != null ? Get(col.gameObject) : null;
+
         // Private state
         private float _currentThrowForce;
         private bool _isCharging;
@@ -82,6 +111,9 @@ namespace DScrollerGame.Player
 
         private void Awake()
         {
+            // Register this instance by its root GameObject for fast lookup.
+            _instances[gameObject] = this;
+
             _trajectoryBuffer = new Vector3[_trajectoryPoints];
 
             // Cache player colliders to ignore them when throwing.
@@ -108,6 +140,14 @@ namespace DScrollerGame.Player
 
             if (_powerMeterBar != null)
                 _powerMeterBar.gameObject.SetActive(false);
+        }
+
+        private void OnDestroy()
+        {
+            if (_instances.ContainsKey(gameObject) && _instances[gameObject] == this)
+            {
+                _instances.Remove(gameObject);
+            }
         }
 
         private void OnEnable()
